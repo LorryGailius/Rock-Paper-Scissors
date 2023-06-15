@@ -3,14 +3,63 @@
 <div class="index">
     <h1>ROCK PAPER SCISSORS</h1>
 
-    <button style="width:10em;">Host Game</button>
+    @switch(step)
+    {
+        case 1:
+            <div class="menu 1">
+                <button style="width:10em;" @onclick=@HostOnClick>Create Game</button>
+                <button @onclick=@JoinOnClick>Join Game</button>
+            </div>
+            break;
+        case 2:
 
-    <button>Join Game</button>
+            <div class="menu 2">
+                <h5>Username:</h5>
+                <InputText @bind-Value="username" class="input username" />
+                
+                @if(host)
+                {
+                    <button>Create</button>
+
+                }
+                else
+                {
+                    <h5>Room Code:</h5>
+                    <InputText @bind-Value="roomCode" class="input roomcode" />
+                    <button>Join</button>
+                }
+                <button @onclick=@BackOnClick>◄Go back</button>
+            </div>
+            break;
+    }
 </div>
 
 
 
 
 @code {
+    bool host = false;
+    int step = 1;
+
+    String username = String.Empty;
+    String roomCode = String.Empty;
+
+    public void HostOnClick()
+    {
+        host = true;
+        step = 2;
+    }
+
+    public void JoinOnClick()
+    {
+        host = false;
+        step = 2;
+    }
+
+    public void BackOnClick()
+    {
+        host = false;
+        step = 1;
+    }
 
 }
