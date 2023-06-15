@@ -1,10 +1,12 @@
 ﻿@page "/play"
+@using Rock_Paper_Scissors.Client.Services;
 @inject NavigationManager NavigationManager
+@inject IUserService UserService;
 
 <div class="index">
-
-
+    <button style="position:absolute;left:0;top:0;" @onclick=@ReturnToMenu>◄Return to menu</button>
     <h1> Room @roomCode</h1>
+    <h1>User @UserService.Username</h1>
 </div>
 
 
@@ -24,9 +26,15 @@
 
         if(roomCode.Length < 6)
         {
-            NavigationManager.NavigateTo("/");
+            ReturnToMenu();
         }
 
+        UserService.RoomCode = roomCode;
         return roomCode;
+    }
+
+    private void ReturnToMenu()
+    {
+        NavigationManager.NavigateTo("/");
     }
 }
