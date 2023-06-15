@@ -1,22 +1,52 @@
 ﻿@page "/play"
 @using Rock_Paper_Scissors.Client.Services;
+@using Microsoft.AspNetCore.SignalR.Client;
 @inject NavigationManager NavigationManager
 @inject IUserService UserService;
+@implements IAsyncDisposable;
 
 <div class="index">
     <button style="position:absolute;left:0;top:0;" @onclick=@ReturnToMenu>◄Return to menu</button>
-    <h1> Room @roomCode</h1>
-    <h1>User @UserService.Username</h1>
+    @if(isConnected)
+    {
+        <h1> Room @roomCode</h1>
+        <h1>User @UserService.User.Username</h1>
+        <h1>Connected : @isConnected</h1>
+    }
+    else
+    {
+        <h1>Could not connect to game</h1>
+    }
 </div>
 
 
 @code {
-    string roomCode;
+    string message = String.Empty;
+    string roomCode = String.Empty;
+    private HubConnection? hubConnection;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         roomCode = GetRoomCodeFromUrl();
+        
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.ToAbsoluteUri("/gamehub"))
+            .Build();
+
+        hubConnection.On<string>("ReceiveMessage", (message) =>
+        {
+            Console.WriteLine(message);
+        });
+
+        await hubConnection.StartAsync();
+
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("JoinRoom", UserService.User);
+        }
     }
+
+    public bool isConnected => hubConnection?.State == HubConnectionState.Connected;
 
     private string GetRoomCodeFromUrl()
     {
@@ -29,7 +59,7 @@
             ReturnToMenu();
         }
 
-        UserService.RoomCode = roomCode;
+        UserService.User.RoomCode = roomCode;
         return roomCode;
     }
 
@@ -37,4 +67,13 @@
     {
         NavigationManager.NavigateTo("/");
     }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
 }

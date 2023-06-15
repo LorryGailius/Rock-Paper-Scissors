@@ -1,8 +1,9 @@
-﻿namespace Rock_Paper_Scissors.Client.Services
+﻿using Rock_Paper_Scissors.Shared;
+
+namespace Rock_Paper_Scissors.Client.Services
 {
     public class UserService : IUserService
     {
-        public string Username { get; set; }
-        public string RoomCode { get; set; }
+        public Player User { get; set; } = new Player();
     }
 }

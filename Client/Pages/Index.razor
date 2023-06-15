@@ -19,7 +19,7 @@
 
             <div class="menu 2">
                 <h5>Username:</h5>
-                <InputText @bind-Value=@UserService.Username class="input username" placeholder="Username"/>
+                <InputText @bind-Value=@UserService.User.Username class="input username" placeholder="Username"/>
 
                 @if (host)
                 {
@@ -28,7 +28,7 @@
                 else
                 {
                     <h5>Room Code:</h5>
-                    <InputText @bind-Value=@UserService.RoomCode class="input roomcode" placeholder="Room Code"/>
+                    <InputText @bind-Value=@UserService.User.RoomCode class="input roomcode" placeholder="Room Code"/>
                     <button @onclick=@JoinRoom>Join</button>
                 }
                 <button @onclick=@BackOnClick style="position:absolute;bottom:0;">◄Go back</button>
@@ -63,26 +63,27 @@
 
     private void CreateRoom()
     {
-        if (UserService.Username == String.Empty)
+        if (UserService.User.Username == String.Empty)
         {
             return;
         }
-        UserService.RoomCode = GenerateId(6);
-        NavigationManager.NavigateTo($"/play?roomCode={UserService.RoomCode}");
+        UserService.User.RoomCode = GenerateId(6);
+        NavigationManager.NavigateTo($"/play?roomCode={UserService.User.RoomCode}");
     }
 
     private void JoinRoom()
     {
-        if (UserService.Username == String.Empty || UserService.RoomCode == String.Empty)
+        if (String.IsNullOrEmpty(UserService.User.Username) || String.IsNullOrEmpty(UserService.User.RoomCode))
         {
             return;
         }
-        NavigationManager.NavigateTo($"/play?roomCode={UserService.RoomCode}");
+        UserService.User.RoomCode = UserService.User.RoomCode.ToUpper();
+        NavigationManager.NavigateTo($"/play?roomCode={UserService.User.RoomCode}");
     }
 
     private string GenerateId(int length)
     {
-        String availableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        String availableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
         Random random = new Random();
         StringBuilder builder = new StringBuilder(length);

@@ -11,12 +11,21 @@
     height: 2.5rem;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+    font-weight: bold;
     border-radius: var(--border-radius);
     box-shadow: black 2px 2px 0;
 }
 
     .input:focus {
         outline: none;
+    }
+
+.roomcode {
+    text-transform: uppercase;
+}
+
+    .roomcode::placeholder {
+        text-transform: none;
     }
 
 html, body {
