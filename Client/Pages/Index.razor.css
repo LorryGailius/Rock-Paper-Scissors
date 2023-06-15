@@ -41,19 +41,26 @@ button {
     padding-left: 1rem;
     padding-right: 1rem;
     background: #a488ef;
-    border-radius: 0.25rem;
+    border-radius: var(--border-radius);
     box-shadow: black 2px 2px 0;
+    text-align: center;
+    position: relative;
     width: 8rem;
 }
 
     button:hover {
-        transition: 0ms;
         background: #9d80cc;
+    }
+
+
+    button:focus-visible {
+        background: #9d80cc;
+        outline: none;
     }
 
     button:active {
         transition: 0ms;
-        background: #c5a1ff;
+        background: #62507f;
     }
 
     button:disabled {
