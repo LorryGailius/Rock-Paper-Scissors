@@ -34,15 +34,24 @@
     }
 </div>
 
-
-
-
 @code {
     bool host = false;
     int step = 1;
 
     String username = String.Empty;
     String roomCode = String.Empty;
+    String salt = String.Empty;
+
+
+    protected override void OnInitialized()
+    {
+        salt = Environment.GetEnvironmentVariable("ROOMID_SALT");
+
+        if(salt is null)
+        {
+            salt = "default";
+        }
+    }
 
     private void HostOnClick()
     {
@@ -64,11 +73,11 @@
 
     private void CreateRoom()
     {
-        roomCode = GenerateShortId();
+        roomCode = GenerateId();
         Console.WriteLine(roomCode);
     }
 
-    private string GenerateShortId()
+    private string GenerateId()
     {
         var guid = Guid.NewGuid();
         var guidBytes = guid.ToByteArray();
