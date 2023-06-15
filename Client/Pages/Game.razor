@@ -1,5 +1,6 @@
 ﻿@page "/play"
 @using Rock_Paper_Scissors.Client.Services;
+@using System.Timers;
 @using Microsoft.AspNetCore.SignalR.Client;
 @inject NavigationManager NavigationManager
 @inject IUserService UserService;
@@ -14,32 +15,33 @@
     }
     else
     {
-    @if (isConnected)
-    {
+        @if (isConnected)
+        {
             @if (!inRoom)
             {
                 <h5>Please enter you username for the game:</h5>
                 <InputText @bind-Value=@UserService.User.Username class="input username" placeholder="Username" />
                 <button @onclick=@JoinRoom>Join</button>
             }
-        <div style="position:absolute;top:0;">
-            <h6>Room @roomCode</h6>
-            <h6>User @UserService.User.Username</h6>
-            <h6>Connected : @isConnected</h6>
-        </div>
-    }
-    else
-    {
-        <h1>Could not connect to game</h1>
-    }
 
-    @if (UserService.User.Username is null || !inRoom)
-    {
-        <h5>Please enter you username for the game:</h5>
-        <InputText @bind-Value=@UserService.User.Username class="input username" placeholder="Username" />
-        <button @onclick=@JoinRoom>Join</button>
-    }
+            @if(enableButtons)
+            {
+                <h1>S</h1>
+                <h1>R</h1>
+                <h1>P</h1>
+            }
 
+            <div style="position:absolute;top:0;">
+                <h6>Room @roomCode</h6>
+                <h6>User @UserService.User.Username</h6>
+                <h6>Connected : @isConnected</h6>
+            </div>
+        }
+        else
+        {
+            <h1>Could not connect to game</h1>
+        }
+    }
 </div>
 
 
@@ -50,6 +52,9 @@
     private bool inRoom = false;
     private bool errored = false;
     private string errorMessage = String.Empty;
+    private Timer timer;
+    private bool isTimerElapsed;
+    private bool enableButtons = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,16 +75,40 @@
             StateHasChanged();
         });
 
-       hubConnection.On<string>("Error", (message) =>
-       {
+        hubConnection.On<string>("Error", (message) =>
+        {
             errored = true;
             errorMessage = message;
-           Console.WriteLine(message);
-       });
+            Console.WriteLine(message);
+            StateHasChanged();
+        });
+
+        hubConnection.On("StartGame", () =>
+        {
+            Console.WriteLine("Game has started");
+            enableButtons = true;
+            StateHasChanged();
+            StartTimer();
+        });
 
         await hubConnection.StartAsync();
 
         await JoinRoom();
+    }
+
+    private void StartTimer()
+    {
+        timer = new Timer(10000);
+        timer.Elapsed += TimeElapsed;
+        timer.Start();
+    }
+
+    private void TimeElapsed(object sender, ElapsedEventArgs e)
+    {
+        timer.Stop();
+        enableButtons = false;
+        isTimerElapsed = true;
+        StateHasChanged();
     }
 
     public async Task JoinRoom()
