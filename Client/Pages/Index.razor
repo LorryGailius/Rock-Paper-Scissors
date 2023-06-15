@@ -1,4 +1,7 @@
 ﻿@page "/"
+@using System.Text;
+@using Rock_Paper_Scissors.Client.Services;
+@inject IUserService UserService;
 
 <div class="index">
     <h1>ROCK PAPER SCISSORS</h1>
@@ -15,7 +18,7 @@
 
             <div class="menu 2">
                 <h5>Username:</h5>
-                <InputText @bind-Value="username" class="input username" />
+                <InputText @bind-Value="usernameField" class="input username" />
                 
                 @if(host)
                 {
@@ -25,10 +28,10 @@
                 else
                 {
                     <h5>Room Code:</h5>
-                    <InputText @bind-Value="roomCode" class="input roomcode" />
+                    <InputText @bind-Value="roomCodeField" class="input roomcode" />
                     <button>Join</button>
                 }
-                <button @onclick=@BackOnClick>◄Go back</button>
+                <button @onclick=@BackOnClick style="position:absolute;bottom:0;">◄Go back</button>
             </div>
             break;
     }
@@ -38,20 +41,9 @@
     bool host = false;
     int step = 1;
 
-    String username = String.Empty;
-    String roomCode = String.Empty;
+    String usernameField = String.Empty;
+    String roomCodeField = String.Empty;
     String salt = String.Empty;
-
-
-    protected override void OnInitialized()
-    {
-        salt = Environment.GetEnvironmentVariable("ROOMID_SALT");
-
-        if(salt is null)
-        {
-            salt = "default";
-        }
-    }
 
     private void HostOnClick()
     {
@@ -73,14 +65,37 @@
 
     private void CreateRoom()
     {
-        roomCode = GenerateId();
-        Console.WriteLine(roomCode);
+        if(usernameField == String.Empty)
+        {
+            Console.WriteLine("Username is empty");
+            return;
+        }
+        UserService.Username = usernameField;
+        roomCodeField = GenerateId(6);
+        Console.WriteLine(roomCodeField);
     }
 
-    private string GenerateId()
+    private void JoinRoom()
     {
-        var guid = Guid.NewGuid();
-        var guidBytes = guid.ToByteArray();
-        return Convert.ToBase64String(guidBytes).Replace("=", "").Replace("+", "").Replace("/", "");
+        if(usernameField == String.Empty)
+        {
+            Console.WriteLine("Username is empty");
+            return;
+        }
+    }
+
+    private string GenerateId(int length)
+    {
+        String availableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        Random random = new Random();
+        StringBuilder builder = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++)
+        {
+            builder.Append(availableChars[random.Next(availableChars.Length)]);
+        }
+
+        return builder.ToString();
     }
 }
