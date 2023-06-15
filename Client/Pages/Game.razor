@@ -1,0 +1,32 @@
+﻿@page "/play"
+@inject NavigationManager NavigationManager
+
+<div class="index">
+
+
+    <h1> Room @roomCode</h1>
+</div>
+
+
+@code {
+    string roomCode;
+
+    protected override void OnInitialized()
+    {
+        roomCode = GetRoomCodeFromUrl();
+    }
+
+    private string GetRoomCodeFromUrl()
+    {
+        var uri = new Uri(NavigationManager.Uri);
+        var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
+        var roomCode = queryParams.Get("roomCode");
+
+        if(roomCode.Length < 6)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+
+        return roomCode;
+    }
+}
