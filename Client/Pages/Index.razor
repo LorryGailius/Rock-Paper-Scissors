@@ -7,7 +7,7 @@
     {
         case 1:
             <div class="menu 1">
-                <button style="width:10em;" @onclick=@HostOnClick>Create Game</button>
+                <button @onclick=@HostOnClick>Create Game</button>
                 <button @onclick=@JoinOnClick>Join Game</button>
             </div>
             break;
@@ -19,7 +19,7 @@
                 
                 @if(host)
                 {
-                    <button>Create</button>
+                    <button @onclick=@CreateRoom>Create</button>
 
                 }
                 else
@@ -44,22 +44,34 @@
     String username = String.Empty;
     String roomCode = String.Empty;
 
-    public void HostOnClick()
+    private void HostOnClick()
     {
         host = true;
         step = 2;
     }
 
-    public void JoinOnClick()
+    private void JoinOnClick()
     {
         host = false;
         step = 2;
     }
 
-    public void BackOnClick()
+    private void BackOnClick()
     {
         host = false;
         step = 1;
     }
 
+    private void CreateRoom()
+    {
+        roomCode = GenerateShortId();
+        Console.WriteLine(roomCode);
+    }
+
+    private string GenerateShortId()
+    {
+        var guid = Guid.NewGuid();
+        var guidBytes = guid.ToByteArray();
+        return Convert.ToBase64String(guidBytes).Replace("=", "").Replace("+", "").Replace("/", "");
+    }
 }

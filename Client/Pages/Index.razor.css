@@ -21,8 +21,6 @@
     width: 50%;
 }
 
-
-
 h1 {
     text-align: center;
     font-weight: bold;
@@ -43,9 +41,6 @@ button {
     background: #a488ef;
     border-radius: var(--border-radius);
     box-shadow: black 2px 2px 0;
-    text-align: center;
-    position: relative;
-    width: 8rem;
 }
 
     button:hover {
