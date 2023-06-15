@@ -51,7 +51,6 @@ namespace Rock_Paper_Scissors.Server.Hubs
             await Task.CompletedTask;
         }
 
-
         public async Task JoinRoom(Player player)
         {
             // Add room if it doesn't exist
@@ -60,16 +59,15 @@ namespace Rock_Paper_Scissors.Server.Hubs
                 rooms.Add(player.RoomCode, new List<Player>());
             }
 
-            if(player.ConnectionId is null)
+            if(rooms[player.RoomCode].Count < 2)
             {
-
                 // Add user to room
                 rooms[player.RoomCode].Add(new Player(player.Username, player.RoomCode, Context.ConnectionId));
             }
             else
             {
-                // Add user to room
-                rooms[player.RoomCode].Add(player);
+                await Clients.Caller.SendAsync("Error", "Room is full");
+                return;
             }
 
             // Print how many rooms are active
@@ -94,6 +92,7 @@ namespace Rock_Paper_Scissors.Server.Hubs
             // Add user to group
             await Groups.AddToGroupAsync(Context.ConnectionId, player.RoomCode);
             await Clients.Group(player.RoomCode).SendAsync("ReceiveMessage", $"{player.Username} joined {player.ConnectionId}");
+            await Clients.Caller.SendAsync("Success");
         }
     }
 }
