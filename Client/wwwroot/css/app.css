@@ -1,6 +1,6 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-:root{
+:root {
     --border-radius: 0.25rem;
 }
 
@@ -30,6 +30,7 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background: #f9de0c;
 }
 
 h1:focus {
@@ -105,14 +106,16 @@ a, .btn-link {
 
     .loading-progress circle {
         fill: none;
-        stroke: #e0e0e0;
-        stroke-width: 0.6rem;
+        stroke: black;
+        stroke-width: 0.8rem;
         transform-origin: 50% 50%;
+        animation: rotate 2s linear infinite;
         transform: rotate(-90deg);
     }
 
         .loading-progress circle:last-child {
-            stroke: #1b6ec2;
+            stroke-width: 0.6rem;
+            stroke: #9d80cc;
             stroke-dasharray: calc(3.141 * var(--blazor-load-percentage, 0%) * 0.8), 500%;
             transition: stroke-dasharray 0.05s ease-in-out;
         }
