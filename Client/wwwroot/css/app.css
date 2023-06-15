@@ -1,5 +1,24 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+:root{
+    --border-radius: 0.25rem;
+}
+
+.input {
+    border: 2px solid black;
+    margin: 0.5rem;
+    transition: 300ms;
+    height: 2.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: black 2px 2px 0;
+}
+
+    .input:focus {
+        outline: none;
+    }
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
