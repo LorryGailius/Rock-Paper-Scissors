@@ -7,16 +7,26 @@
 
 <div class="index">
     <button style="position:absolute;left:0;top:0;" @onclick=@ReturnToMenu>◄Return to menu</button>
-    @if(isConnected)
+    @if (isConnected)
     {
-        <h1> Room @roomCode</h1>
-        <h1>User @UserService.User.Username</h1>
-        <h1>Connected : @isConnected</h1>
+        <div style="position:absolute;top:0;">
+            <h6>Room @roomCode</h6>
+            <h6>User @UserService.User.Username</h6>
+            <h6>Connected : @isConnected</h6>
+        </div>
     }
     else
     {
         <h1>Could not connect to game</h1>
     }
+
+    @if (UserService.User.Username is null || !inRoom)
+    {
+        <h5>Please enter you username for the game:</h5>
+        <InputText @bind-Value=@UserService.User.Username class="input username" placeholder="Username" />
+        <button @onclick=@JoinRoom>Join</button>
+    }
+
 </div>
 
 
@@ -24,11 +34,12 @@
     string message = String.Empty;
     string roomCode = String.Empty;
     private HubConnection? hubConnection;
+    bool inRoom = false;
 
     protected override async Task OnInitializedAsync()
     {
         roomCode = GetRoomCodeFromUrl();
-        
+
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/gamehub"))
             .Build();
@@ -38,9 +49,26 @@
             Console.WriteLine(message);
         });
 
+        hubConnection.On("Success", () =>
+        {
+            inRoom = true;
+            StateHasChanged();
+        });
+
+       hubConnection.On<string>("Error", (message) =>
+       {
+           Console.WriteLine(message);
+       });
+
         await hubConnection.StartAsync();
 
-        if (hubConnection is not null)
+        await JoinRoom();
+    }
+
+    public async Task JoinRoom()
+    {
+        Console.WriteLine("Joining room");
+        if (hubConnection is not null && !String.IsNullOrEmpty(UserService.User.Username))
         {
             await hubConnection.SendAsync("JoinRoom", UserService.User);
         }
@@ -54,7 +82,7 @@
         var queryParams = System.Web.HttpUtility.ParseQueryString(uri.Query);
         var roomCode = queryParams.Get("roomCode");
 
-        if(roomCode.Length < 6)
+        if (roomCode.Length < 6)
         {
             ReturnToMenu();
         }
