@@ -9,6 +9,8 @@
 <div class="index">
     <button style="position:absolute;left:0;top:0;" @onclick=@ReturnToMenu>◄Return to menu</button>
 
+
+
     @if (errored)
     {
         <h1>@errorMessage</h1>
@@ -31,11 +33,12 @@
                 <h1>P</h1>
             }
 
-            <div style="position:absolute;top:0;">
-                <h6>Room @roomCode</h6>
-                <h6>User @UserService.User.Username</h6>
-                <h6>Connected : @isConnected</h6>
+            <div class="selection-container">
+                <button class="selector">S</button>
+                <button class="selector">R</button>
+                <button class="selector">P</button>
             </div>
+
         }
         else
         {

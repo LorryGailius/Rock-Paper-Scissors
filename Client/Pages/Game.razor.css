@@ -11,6 +11,13 @@
     background: #f9de0c;
 }
 
+.selection-container {
+}
+
+.selector {
+    background: red;
+}
+
 .menu {
     display: flex;
     flex-direction: column;
