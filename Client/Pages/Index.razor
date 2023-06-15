@@ -63,7 +63,7 @@
 
     private void CreateRoom()
     {
-        if (UserService.User.Username == String.Empty)
+        if (String.IsNullOrEmpty(UserService.User.Username))
         {
             return;
         }
