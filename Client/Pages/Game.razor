@@ -7,8 +7,21 @@
 
 <div class="index">
     <button style="position:absolute;left:0;top:0;" @onclick=@ReturnToMenu>◄Return to menu</button>
+
+    @if (errored)
+    {
+        <h1>@errorMessage</h1>
+    }
+    else
+    {
     @if (isConnected)
     {
+            @if (!inRoom)
+            {
+                <h5>Please enter you username for the game:</h5>
+                <InputText @bind-Value=@UserService.User.Username class="input username" placeholder="Username" />
+                <button @onclick=@JoinRoom>Join</button>
+            }
         <div style="position:absolute;top:0;">
             <h6>Room @roomCode</h6>
             <h6>User @UserService.User.Username</h6>
@@ -31,10 +44,12 @@
 
 
 @code {
-    string message = String.Empty;
-    string roomCode = String.Empty;
+    private string message = String.Empty;
+    private string roomCode = String.Empty;
     private HubConnection? hubConnection;
-    bool inRoom = false;
+    private bool inRoom = false;
+    private bool errored = false;
+    private string errorMessage = String.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,6 +72,8 @@
 
        hubConnection.On<string>("Error", (message) =>
        {
+            errored = true;
+            errorMessage = message;
            Console.WriteLine(message);
        });
 

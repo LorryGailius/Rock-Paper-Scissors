@@ -59,9 +59,16 @@ namespace Rock_Paper_Scissors.Server.Hubs
                 rooms.Add(player.RoomCode, new List<Player>());
             }
 
+            // Check if username is taken
+            if (rooms[player.RoomCode].Any(p => p.Username == player.Username))
+            {
+                await Clients.Caller.SendAsync("Error", "Username is taken");
+                return;
+            }
+
+            // Check if room is full
             if(rooms[player.RoomCode].Count < 2)
             {
-                // Add user to room
                 rooms[player.RoomCode].Add(new Player(player.Username, player.RoomCode, Context.ConnectionId));
             }
             else
@@ -93,6 +100,13 @@ namespace Rock_Paper_Scissors.Server.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, player.RoomCode);
             await Clients.Group(player.RoomCode).SendAsync("ReceiveMessage", $"{player.Username} joined {player.ConnectionId}");
             await Clients.Caller.SendAsync("Success");
+
+            // Check if room is full
+            if (rooms[player.RoomCode].Count == 2)
+            {
+                Console.WriteLine("Starting game");
+                await Clients.Group(player.RoomCode).SendAsync("StartGame");
+            }
         }
     }
 }
