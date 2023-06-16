@@ -51,6 +51,35 @@ namespace Rock_Paper_Scissors.Server.Hubs
             await Task.CompletedTask;
         }
 
+        public async Task Answer(Player player)
+        {
+            rooms[player.RoomCode].FirstOrDefault(p => p.Username == player.Username).Choice = player.Choice;
+
+            // Check if both players have answered
+            if (rooms[player.RoomCode].All(p => p.Choice != null))
+            {
+                // Get winner
+                var winner = GetWinner(rooms[player.RoomCode][0], rooms[player.RoomCode][1]);
+
+                // Send winner to players
+                await Clients.Group(player.RoomCode).SendAsync("GameEnd", winner);
+
+                // Reset choices
+                rooms[player.RoomCode][0].Choice = null;
+                rooms[player.RoomCode][1].Choice = null;
+            }
+        }
+
+        public Player GetWinner(Player p1, Player p2)
+        {
+            if (p1.Choice == null || p1.Choice == "Paper" && p2.Choice == "Scissors" || p1.Choice == "Rock" && p2.Choice == "Paper" || p1.Choice == "Scissors" && p2.Choice == "Rock")
+            {
+                return p2;
+            }
+
+            return p1;
+        }
+
         public async Task JoinRoom(Player player)
         {
             // Add room if it doesn't exist
@@ -67,7 +96,7 @@ namespace Rock_Paper_Scissors.Server.Hubs
             }
 
             // Check if room is full
-            if(rooms[player.RoomCode].Count < 2)
+            if (rooms[player.RoomCode].Count < 2)
             {
                 rooms[player.RoomCode].Add(new Player(player.Username, player.RoomCode, Context.ConnectionId));
             }

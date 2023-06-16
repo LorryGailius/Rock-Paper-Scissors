@@ -2,6 +2,7 @@
 @using Rock_Paper_Scissors.Client.Services;
 @using System.Timers;
 @using Microsoft.AspNetCore.SignalR.Client;
+@using Rock_Paper_Scissors.Shared;
 @inject NavigationManager NavigationManager
 @inject IUserService UserService;
 @implements IAsyncDisposable;
@@ -19,18 +20,32 @@
         {
             @if (!inRoom)
             {
-                <h5>Please enter you username for the game:</h5>
-                <InputText @bind-Value=@UserService.User.Username class="input username" placeholder="Username" />
-                <button @onclick=@JoinRoom>Join</button>
+                if (String.IsNullOrEmpty(UserService.User.Username))
+                {
+                    <h5>Please enter you username for the game:</h5>
+                    <InputText @bind-Value=@UserService.User.Username class="input username" placeholder="Username" />
+                    <button @onclick=@JoinRoom>Join</button>
+                }
+
             }
 
             @if (enableButtons)
             {
                 <div class="selection-container">
-                    <button class='selector @ButtonClass("S")' @onclick='() => SelectButton("S")'>S</button>
-                    <button class='selector @ButtonClass("R")' @onclick='() => SelectButton("R")'>R</button>
-                    <button class='selector @ButtonClass("P")' @onclick='() => SelectButton("P")'>P</button>
+                    <button class='selector @ButtonClass("Scissors")' @onclick='() => SelectButton("Scissors")'>S</button>
+                    <button class='selector @ButtonClass("Rock")' @onclick='() => SelectButton("Rock")'>R</button>
+                    <button class='selector @ButtonClass("Paper")' @onclick='() => SelectButton("Paper")'>P</button>
                 </div>
+            }
+
+            @if (isTimerElapsed && winner is null)
+            {
+                <h1>Waiting for opponents response...</h1>
+            }
+
+            @if (winner is not null)
+            {
+                <h1>@winner.Username wins with @winner.Choice</h1>
             }
         }
         else
@@ -51,6 +66,7 @@
     private Timer timer;
     private bool isTimerElapsed;
     private bool enableButtons = false;
+    private Player? winner;
 
     protected override async Task OnInitializedAsync()
     {
@@ -87,6 +103,12 @@
             StartTimer();
         });
 
+        hubConnection.On<Player>("GameEnd", (player) =>
+        {
+            winner = player;
+            StateHasChanged();
+        });
+
         await hubConnection.StartAsync();
 
         await JoinRoom();
@@ -99,12 +121,14 @@
         timer.Start();
     }
 
-    private void TimeElapsed(object sender, ElapsedEventArgs e)
+    private async void TimeElapsed(object sender, ElapsedEventArgs e)
     {
         timer.Stop();
         enableButtons = false;
         isTimerElapsed = true;
         StateHasChanged();
+        UserService.User.Choice = selectedButton;
+        await hubConnection.SendAsync("Answer", UserService.User);
     }
 
     public async Task JoinRoom()
