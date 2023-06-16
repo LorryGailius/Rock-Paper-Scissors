@@ -15,7 +15,31 @@
 }
 
 .selector {
-    background: red;
+    background: white;
+    border-radius: 100%;
+    height: 5rem;
+    width: 5rem;
+}
+
+    .selector:hover {
+        background: #b2b2b2;
+    }
+
+    .selector:focus-visible {
+        outline: none;
+        background: #b2b2b2;
+    }
+
+    .selector:active {
+        transition: 0ms;
+        background: #656565;
+    }
+
+.selected,
+.selected:hover,
+.selected:focus,
+.selected:active {
+    outline: 5px solid #9d80cc;
 }
 
 .menu {

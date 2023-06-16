@@ -9,8 +9,6 @@
 <div class="index">
     <button style="position:absolute;left:0;top:0;" @onclick=@ReturnToMenu>◄Return to menu</button>
 
-
-
     @if (errored)
     {
         <h1>@errorMessage</h1>
@@ -26,19 +24,14 @@
                 <button @onclick=@JoinRoom>Join</button>
             }
 
-            @if(enableButtons)
+            @if (enableButtons)
             {
-                <h1>S</h1>
-                <h1>R</h1>
-                <h1>P</h1>
+                <div class="selection-container">
+                    <button class='selector @ButtonClass("S")' @onclick='() => SelectButton("S")'>S</button>
+                    <button class='selector @ButtonClass("R")' @onclick='() => SelectButton("R")'>R</button>
+                    <button class='selector @ButtonClass("P")' @onclick='() => SelectButton("P")'>P</button>
+                </div>
             }
-
-            <div class="selection-container">
-                <button class="selector">S</button>
-                <button class="selector">R</button>
-                <button class="selector">P</button>
-            </div>
-
         }
         else
         {
@@ -151,6 +144,19 @@
         {
             await hubConnection.DisposeAsync();
         }
+    }
+
+    private String selectedButton;
+
+    private void SelectButton(String button)
+    {
+        selectedButton = button;
+        StateHasChanged();
+    }
+
+    private string ButtonClass(String button)
+    {
+        return button == selectedButton ? "selected" : "";
     }
 
 }
