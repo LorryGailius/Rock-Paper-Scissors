@@ -9,7 +9,7 @@
 
 <div class="index">
     <button style="position:absolute;left:0;top:0;" @onclick=@ReturnToMenu>◄Return to menu</button>
-
+    <h1>@isConnected</h1>
     @if (errored)
     {
         <h1 class="centered">@errorMessage</h1>
@@ -77,10 +77,6 @@
                     </div>
                 }
             }
-            else
-            {
-                <h1 class="centered">Could not connect to game</h1>
-            }
         }
     }
 </div>
@@ -122,7 +118,9 @@
             winner = null;
             timeLeft = 10;
             enableButtons = true;
-            StartTimer();
+            errored = false;
+            errorMessage = String.Empty;
+            StartGameTimer();
             StateHasChanged();
         });
 
@@ -131,21 +129,22 @@
             winner = player;
             StateHasChanged();
         });
-        loading = false;
+        timeoutTimer.Elapsed += TimeoutTimerElapsed;
+        timeoutTimer.Start();
         await hubConnection.StartAsync();
-
+        loading = false;
         await JoinRoom();
     }
 
-    private Timer timer;
+    private Timer gameTimer;
     private bool isTimerElapsed;
     private int timeLeft = 10;
 
-    private void StartTimer()
+    private void StartGameTimer()
     {
-        timer = new Timer(1000);
-        timer.Elapsed += TimeElapsed;
-        timer.Start();
+        gameTimer = new Timer(1000);
+        gameTimer.Elapsed += TimeElapsed;
+        gameTimer.Start();
     }
 
     private async void TimeElapsed(object sender, ElapsedEventArgs e)
@@ -157,7 +156,7 @@
         }
         else
         {
-            timer.Stop();
+            gameTimer.Stop();
             enableButtons = false;
             isTimerElapsed = true;
             StateHasChanged();
@@ -166,6 +165,18 @@
             {
                 await hubConnection.SendAsync("Answer", UserService.User);
             }
+        }
+    }
+
+    private Timer timeoutTimer = new Timer(7000);
+
+    private async void TimeoutTimerElapsed(object sender, ElapsedEventArgs e)
+    {
+        if (!isConnected)
+        {
+            timeoutTimer.Stop();
+            errored = true;
+            errorMessage = "Could not connect to game";
         }
     }
 
