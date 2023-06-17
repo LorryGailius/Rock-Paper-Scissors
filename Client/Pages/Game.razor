@@ -16,47 +16,55 @@
     }
     else
     {
-        @if (isConnected)
+        @if (loading)
         {
-            @if (!inRoom)
-            {
-                if (String.IsNullOrEmpty(UserService.User.Username))
-                {
-                    <h5>Please enter you username for the game:</h5>
-                    <InputText @bind-Value=@UserService.User.Username class="input username" placeholder="Username" />
-                    <button @onclick=@JoinRoom>Join</button>
-                }
-
-            }
-
-            @if (enableButtons)
-            {
-                <div class="selection-container">
-                    <button class='selector @ButtonClass("Scissors")' @onclick='() => SelectButton("Scissors")'><img src="images/scissors.svg"/></button>
-                    <button class='selector @ButtonClass("Rock")' @onclick='() => SelectButton("Rock")'><img src="Images/rock.svg"/></button>
-                    <button class='selector @ButtonClass("Paper")' @onclick='() => SelectButton("Paper")'><img src="Images/paper.svg"/></button>
-                </div>
-            }
-
-            @if (isTimerElapsed && winner is null)
-            {
-                <h1>Waiting for opponents response...</h1>
-            }
-
-            @if (winner is not null)
-            {
-                <h1>@winner.Username wins with @winner.Choice</h1>
-            }
+            <h1>Loading...</h1>
         }
         else
         {
-            <h1>Could not connect to game</h1>
+            @if (isConnected)
+            {
+                @if (!inRoom)
+                {
+                    if (String.IsNullOrEmpty(UserService.User.Username))
+                    {
+                        <h5>Please enter you username for the game:</h5>
+                        <InputText @bind-Value=@newUser class="input username" placeholder="Username" />
+                        <button @onclick=@JoinRoom>Join</button>
+                    }
+
+                }
+
+                @if (enableButtons)
+                {
+                    <div class="selection-container">
+                        <button class='selector @ButtonClass("Scissors")' @onclick='() => SelectButton("Scissors")'><img src="images/scissors.svg" /></button>
+                        <button class='selector @ButtonClass("Rock")' @onclick='() => SelectButton("Rock")'><img src="Images/rock.svg" /></button>
+                        <button class='selector @ButtonClass("Paper")' @onclick='() => SelectButton("Paper")'><img src="Images/paper.svg" /></button>
+                    </div>
+                }
+
+                @if (isTimerElapsed && winner is null)
+                {
+                    <h1>Waiting for opponents response...</h1>
+                }
+
+                @if (winner is not null)
+                {
+                    <h1>@winner.Username wins with @winner.Choice</h1>
+                }
+            }
+            else
+            {
+                <h1>Could not connect to game</h1>
+            }
         }
     }
 </div>
 
 
 @code {
+    private string newUser = String.Empty;
     private string message = String.Empty;
     private string roomCode = String.Empty;
     private HubConnection? hubConnection;
@@ -67,9 +75,11 @@
     private bool isTimerElapsed;
     private bool enableButtons = false;
     private Player? winner;
+    private bool loading = false;
 
     protected override async Task OnInitializedAsync()
     {
+        loading = true;
         roomCode = GetRoomCodeFromUrl();
 
         hubConnection = new HubConnectionBuilder()
@@ -110,7 +120,7 @@
         });
 
         await hubConnection.StartAsync();
-
+        loading = false;
         await JoinRoom();
     }
 
@@ -128,12 +138,21 @@
         isTimerElapsed = true;
         StateHasChanged();
         UserService.User.Choice = selectedButton;
-        await hubConnection.SendAsync("Answer", UserService.User);
+        Console.WriteLine($"Player chose {UserService.User.Choice}");
+        if (hubConnection is not null)
+        {
+            await hubConnection.SendAsync("Answer", UserService.User);
+        }
+
     }
 
     public async Task JoinRoom()
     {
-        Console.WriteLine("Joining room");
+        if (!String.IsNullOrEmpty(newUser))
+        {
+            UserService.User.Username = newUser.Trim();
+        }
+
         if (hubConnection is not null && !String.IsNullOrEmpty(UserService.User.Username))
         {
             await hubConnection.SendAsync("JoinRoom", UserService.User);
