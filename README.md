@@ -2,7 +2,8 @@
 # :scissors: Rock Paper Scissors :scissors:
 
 A multiplayer game of rock paper scissors with room and invite functionality.</br>
-Made with [Blazor WebAssembly](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) and [SignalR](https://dotnet.microsoft.com/en-us/apps/aspnet/signalr).
+Made with [Blazor WebAssembly](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) and [SignalR](https://dotnet.microsoft.com/en-us/apps/aspnet/signalr).</br></br>
+Also available through [this link!](https://vas-ki-ci.azurewebsites.net/)
 
 ## How to play
 - Create a room
