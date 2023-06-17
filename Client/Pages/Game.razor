@@ -39,7 +39,7 @@
                 {
                     @if (enableButtons)
                     {
-                        <h1>@timer.ToString()</h1>
+                        <h1>@timeLeft</h1>
 
                         <div class="selection-container">
                             <button class='selector @ButtonClass("Scissors")' @onclick='() => SelectButton("Scissors")'><img src="images/scissors.svg" /></button>
@@ -143,15 +143,26 @@
         await JoinRoom();
     }
 
+    private Timer timer;
+    private bool isTimerElapsed;
+    private int timeLeft = 10;
+
     private void StartTimer()
     {
-        timer = new Timer(10000);
+        timer = new Timer(1000);
         timer.Elapsed += TimeElapsed;
         timer.Start();
     }
 
     private async void TimeElapsed(object sender, ElapsedEventArgs e)
     {
+        if (timeLeft > 1)
+        {
+            timeLeft--;
+            StateHasChanged();
+        }
+        else
+        {
         timer.Stop();
         enableButtons = false;
         isTimerElapsed = true;
@@ -162,6 +173,8 @@
         {
             await hubConnection.SendAsync("Answer", UserService.User);
         }
+        }
+    }
 
     }
 
