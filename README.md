@@ -5,6 +5,9 @@ A multiplayer game of rock paper scissors with room and invite functionality.</b
 Made with [Blazor WebAssembly](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor) and [SignalR](https://dotnet.microsoft.com/en-us/apps/aspnet/signalr).</br></br>
 Also available through [this link!](https://vas-ki-ci.azurewebsites.net/)
 
+# Design
+Design of website is based on [Neu-Brutalism](https://bootcamp.uxdesign.cc/how-can-i-design-in-the-neo-brutalism-style-d85c458042de)
+
 ## How to play
 - Create a room
 - Invite your friends with the link provided or share the room code
@@ -18,3 +21,4 @@ Also available through [this link!](https://vas-ki-ci.azurewebsites.net/)
 - [ ] Ability to restart game
 - [x] Disable people joining empty room through URL
 - [ ] Ability to play multiple rounds
+- [ ] UI improvements
