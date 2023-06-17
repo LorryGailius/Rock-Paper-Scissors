@@ -29,9 +29,9 @@
                     if (String.IsNullOrEmpty(UserService.User.Username))
                     {
                         <div class="centered">
-                        <h5>Please enter you username for the game:</h5>
-                        <InputText @bind-Value=@newUser class="input" placeholder="Username" />
-                        <button @onclick=@JoinRoom>Join</button>
+                            <h5>Please enter you username for the game:</h5>
+                            <InputText @bind-Value=@newUser class="input" placeholder="Username" />
+                            <button @onclick=@JoinRoom>Join</button>
                         </div>
                     }
                 }
@@ -47,21 +47,26 @@
                             <button class='selector @ButtonClass("Paper")' @onclick='() => SelectButton("Paper")'><img src="Images/paper.svg" /></button>
                         </div>
                     }
-
-                    @if (isTimerElapsed && winner is null)
+                    else if (winner is not null)
                     {
-                        <h1 class="centered">Waiting for opponents response...</h1>
-                    }
-
-                    @if (winner is not null)
-                    {
-                        @if(winner.Username == "Tie")
+                        @if (winner.Username == "Tie")
                         {
                             <h1 class="centered">It's a TIE</h1>
                         }
                         else
                         {
-                            <h1 class="centered">Winner is @winner.Username with <img src="Images/@(winner.Choice).svg"/></h1>
+                            <h1 class="centered">Winner is @winner.Username with <img src="Images/@(winner.Choice).svg" /></h1>
+                        }
+                    }
+                    else
+                    {
+                        if (isTimerElapsed)
+                        {
+                            <h1 class="centered">Waiting for opponents response...</h1>
+                        }
+                        else
+                        {
+                            <h1 class="centered">Waiting for opponent to join...</h1>
                         }
                     }
 
@@ -71,7 +76,6 @@
                         <h3 href="@NavigationManager.Uri">@NavigationManager.Uri</h3>
                     </div>
                 }
-
             }
             else
             {
@@ -83,18 +87,13 @@
 
 
 @code {
-    private string newUser = String.Empty;
-    private string message = String.Empty;
-    private string roomCode = String.Empty;
-    private HubConnection? hubConnection;
-    private bool inRoom = false;
-    private bool errored = false;
-    private string errorMessage = String.Empty;
-    private Timer timer;
-    private bool isTimerElapsed;
-    private bool enableButtons = false;
     private Player? winner;
+    private string newUser = String.Empty;
+    private string roomCode = String.Empty;
+    private string errorMessage = String.Empty;
+    private bool errored = false;
     private bool loading = false;
+    private HubConnection? hubConnection;
 
     protected override async Task OnInitializedAsync()
     {
@@ -104,11 +103,6 @@
         hubConnection = new HubConnectionBuilder()
             .WithUrl(NavigationManager.ToAbsoluteUri("/gamehub"))
             .Build();
-
-        hubConnection.On<string>("ReceiveMessage", (message) =>
-        {
-            Console.WriteLine(message);
-        });
 
         hubConnection.On("Success", () =>
         {
@@ -163,20 +157,21 @@
         }
         else
         {
-        timer.Stop();
-        enableButtons = false;
-        isTimerElapsed = true;
-        StateHasChanged();
-        UserService.User.Choice = selectedButton;
-        Console.WriteLine($"Player chose {UserService.User.Choice}");
-        if (hubConnection is not null)
-        {
-            await hubConnection.SendAsync("Answer", UserService.User);
-        }
+            timer.Stop();
+            enableButtons = false;
+            isTimerElapsed = true;
+            StateHasChanged();
+            UserService.User.Choice = selectedButton;
+            Console.WriteLine($"Player chose {UserService.User.Choice}");
+            if (hubConnection is not null)
+            {
+                await hubConnection.SendAsync("Answer", UserService.User);
+            }
         }
     }
 
-    }
+    private bool inRoom = false;
+    public bool isConnected => hubConnection?.State == HubConnectionState.Connected;
 
     public async Task JoinRoom()
     {
@@ -190,8 +185,6 @@
             await hubConnection.SendAsync("JoinRoom", UserService.User);
         }
     }
-
-    public bool isConnected => hubConnection?.State == HubConnectionState.Connected;
 
     private string GetRoomCodeFromUrl()
     {
@@ -208,6 +201,20 @@
         return roomCode;
     }
 
+    private String selectedButton;
+    private bool enableButtons = false;
+
+    private void SelectButton(String button)
+    {
+        selectedButton = button;
+        StateHasChanged();
+    }
+
+    private string ButtonClass(String button)
+    {
+        return button == selectedButton ? "selected" : "";
+    }
+
     private void ReturnToMenu()
     {
         NavigationManager.NavigateTo("/");
@@ -219,19 +226,6 @@
         {
             await hubConnection.DisposeAsync();
         }
-    }
-
-    private String selectedButton;
-
-    private void SelectButton(String button)
-    {
-        selectedButton = button;
-        StateHasChanged();
-    }
-
-    private string ButtonClass(String button)
-    {
-        return button == selectedButton ? "selected" : "";
     }
 
 }
