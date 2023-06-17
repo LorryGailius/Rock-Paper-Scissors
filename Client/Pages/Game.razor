@@ -29,7 +29,7 @@
                     if (String.IsNullOrEmpty(UserService.User.Username))
                     {
                         <h5>Please enter you username for the game:</h5>
-                        <InputText @bind-Value=@newUser class="input username" placeholder="Username" />
+                        <InputText @bind-Value=@newUser class="input" placeholder="Username" />
                         <button @onclick=@JoinRoom>Join</button>
                     }
 
