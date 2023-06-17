@@ -18,5 +18,9 @@
     <ProjectReference Include="..\Shared\Rock-Paper-Scissors.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 
 </Project>
