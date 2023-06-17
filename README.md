@@ -16,5 +16,5 @@ Also available through [this link!](https://vas-ki-ci.azurewebsites.net/)
 
 # TODO
 - [ ] Ability to restart game
-- [ ] Disable people joining empty room through URL
+- [x] Disable people joining empty room through URL
 - [ ] Ability to play multiple rounds
