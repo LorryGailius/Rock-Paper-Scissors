@@ -12,13 +12,13 @@
 
     @if (errored)
     {
-        <h1>@errorMessage</h1>
+        <h1 class="centered">@errorMessage</h1>
     }
     else
     {
         @if (loading)
         {
-            <h1>Loading...</h1>
+            <h1 class="centered">Loading...</h1>
         }
         else
         {
@@ -28,35 +28,54 @@
                 {
                     if (String.IsNullOrEmpty(UserService.User.Username))
                     {
+                        <div class="centered">
                         <h5>Please enter you username for the game:</h5>
                         <InputText @bind-Value=@newUser class="input" placeholder="Username" />
                         <button @onclick=@JoinRoom>Join</button>
+                        </div>
+                    }
+                }
+                else
+                {
+                    @if (enableButtons)
+                    {
+                        <h1>@timer.ToString()</h1>
+
+                        <div class="selection-container">
+                            <button class='selector @ButtonClass("Scissors")' @onclick='() => SelectButton("Scissors")'><img src="images/scissors.svg" /></button>
+                            <button class='selector @ButtonClass("Rock")' @onclick='() => SelectButton("Rock")'><img src="Images/rock.svg" /></button>
+                            <button class='selector @ButtonClass("Paper")' @onclick='() => SelectButton("Paper")'><img src="Images/paper.svg" /></button>
+                        </div>
                     }
 
-                }
+                    @if (isTimerElapsed && winner is null)
+                    {
+                        <h1 class="centered">Waiting for opponents response...</h1>
+                    }
 
-                @if (enableButtons)
-                {
-                    <div class="selection-container">
-                        <button class='selector @ButtonClass("Scissors")' @onclick='() => SelectButton("Scissors")'><img src="images/scissors.svg" /></button>
-                        <button class='selector @ButtonClass("Rock")' @onclick='() => SelectButton("Rock")'><img src="Images/rock.svg" /></button>
-                        <button class='selector @ButtonClass("Paper")' @onclick='() => SelectButton("Paper")'><img src="Images/paper.svg" /></button>
+                    @if (winner is not null)
+                    {
+                        @if(winner.Username == "Tie")
+                        {
+                            <h1 class="centered">It's a TIE</h1>
+                        }
+                        else
+                        {
+                            <h1 class="centered">Winner is @winner.Username with <img src="Images/@(winner.Choice).svg"/></h1>
+                        }
+                    }
+
+                    <h1>@UserService.User.RoomCode</h1>
+
+                    <div class="crd">
+                        <h3 href="@NavigationManager.Uri">@NavigationManager.Uri</h3>
                     </div>
                 }
 
-                @if (isTimerElapsed && winner is null)
-                {
-                    <h1>Waiting for opponents response...</h1>
-                }
-
-                @if (winner is not null)
-                {
-                    <h1>@winner.Username wins with @winner.Choice</h1>
-                }
             }
             else
             {
-                <h1>Could not connect to game</h1>
+                <h1 class="centered">Could not connect to game</h1>
             }
         }
     }
@@ -109,8 +128,8 @@
         {
             Console.WriteLine("Game has started");
             enableButtons = true;
-            StateHasChanged();
             StartTimer();
+            StateHasChanged();
         });
 
         hubConnection.On<Player>("GameEnd", (player) =>
@@ -118,9 +137,9 @@
             winner = player;
             StateHasChanged();
         });
-
-        await hubConnection.StartAsync();
         loading = false;
+        await hubConnection.StartAsync();
+
         await JoinRoom();
     }
 

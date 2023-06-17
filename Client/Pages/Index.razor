@@ -32,7 +32,7 @@
         case 2:
             <Animate Animation="Animations.SlideLeft">
                 <div class="menu" id="2">
-                    <h5>Username:</h5>
+                    <h5>Username</h5>
                     <InputText @bind-Value=@UserService.User.Username class="input" placeholder="Username" />
 
                     @if (host)
@@ -41,8 +41,8 @@
                     }
                     else
                     {
-                        <h5>Room Code:</h5>
-                        <InputText @bind-Value=@UserService.User.RoomCode class="input" placeholder="Room Code" />
+                        <h5>Room Code</h5>
+                        <InputText @bind-Value=@UserService.User.RoomCode class="input roomcode" placeholder="Room Code" />
                         <button @onclick=@JoinRoom>Join</button>
                     }
 
