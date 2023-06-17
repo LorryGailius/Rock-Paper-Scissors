@@ -43,10 +43,6 @@ namespace Rock_Paper_Scissors.Server.Hubs
                     rooms.Remove(player.RoomCode);
                 }
             }
-            else
-            {
-                Console.WriteLine("Player not found");
-            }
 
             await Task.CompletedTask;
         }
@@ -129,7 +125,6 @@ namespace Rock_Paper_Scissors.Server.Hubs
             // Check if room is full
             if (rooms[player.RoomCode].Count == 2)
             {
-                Console.WriteLine("Starting game");
                 await Clients.Group(player.RoomCode).SendAsync("StartGame");
             }
         }
