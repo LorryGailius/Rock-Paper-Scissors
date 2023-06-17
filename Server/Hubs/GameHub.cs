@@ -119,7 +119,6 @@ namespace Rock_Paper_Scissors.Server.Hubs
 
             // Add user to group
             await Groups.AddToGroupAsync(Context.ConnectionId, player.RoomCode);
-            await Clients.Group(player.RoomCode).SendAsync("ReceiveMessage", $"{player.Username} joined {player.ConnectionId}");
             await Clients.Caller.SendAsync("Success");
 
             // Check if room is full
