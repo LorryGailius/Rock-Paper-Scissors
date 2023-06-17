@@ -74,35 +74,30 @@ button {
     }
 
     .logo {
-        height: 10rem;
-        width: 10rem;
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        gap: 5%;
+        margin: 0 0 2% 0;
     }
 
 /* Phone */
 @media only screen and (max-width: 600px) {
     .logo {
-        height: 10rem;
-        width: 10rem;
+        height: 5rem;
     }
 }
 
 /* Landscape Phone */
 @media only screen and (min-width: 600px) {
     .logo {
-        height: 15rem;
-        width: 15rem
+        height: 8rem;
     }
 }
 
 /* Desktop */
 @media only screen and (min-width: 992px) {
     .logo {
-        height: 20rem;
-width: 20rem;
+        height: 10rem;
     }
 }
