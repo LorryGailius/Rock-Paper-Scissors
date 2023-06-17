@@ -77,6 +77,13 @@ namespace Rock_Paper_Scissors.Server.Hubs
                 return p2;
             }
 
+            if(p1.Choice == p2.Choice)
+            {
+                Player tie = new Player();
+                tie.Username = "Tie";
+                return tie;
+            }
+
             return p1;
         }
 
