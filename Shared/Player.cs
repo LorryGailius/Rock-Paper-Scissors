@@ -10,6 +10,8 @@
 
         public string? ConnectionId { get; set; }
 
+        public bool IsHost { get; set; } = false;
+
         public Player(string username, string roomCode, string connectionId)
         {
             this.Username = username;

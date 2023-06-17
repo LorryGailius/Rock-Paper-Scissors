@@ -101,10 +101,23 @@ namespace Rock_Paper_Scissors.Server.Hubs
 
         public async Task JoinRoom(Player player)
         {
-            // Add room if it doesn't exist
-            if (!rooms.ContainsKey(player.RoomCode))
+            // Checking if player is host
+            if(player.IsHost)
             {
-                rooms.Add(player.RoomCode, new List<Player>());
+                // Check if room already exists
+                if(rooms.ContainsKey(player.RoomCode))
+                {
+                    await Clients.Caller.SendAsync("Error", "Room already exists");
+                }
+                else
+                {
+                    rooms.Add(player.RoomCode, new List<Player>());
+                }   
+            }
+            else if(!rooms.ContainsKey(player.RoomCode))
+            {
+                // Player joining room that doesn't exist
+                await Clients.Caller.SendAsync("Error", "Room doesn't exist");
             }
 
             // Check if username is taken

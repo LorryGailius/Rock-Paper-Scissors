@@ -40,7 +40,7 @@
                     <h5>Username</h5>
                     <InputText @bind-Value=@UserService.User.Username class="input" placeholder="Username" />
 
-                    @if (host)
+                    @if (UserService.User.IsHost)
                     {
                         <button @onclick=@CreateRoom>Create</button>
                     }
@@ -60,26 +60,24 @@
 </div>
 
 @code {
-
-    bool host = false;
     bool hideAnimation = true;
     int step = 1;
 
     private void HostOnClick()
     {
-        host = true;
+        UserService.User.IsHost = true;
         step = 2;
     }
 
     private void JoinOnClick()
     {
-        host = false;
+        UserService.User.IsHost = false;
         step = 2;
     }
 
     private void BackOnClick()
     {
-        host = false;
+        UserService.User.IsHost = false;
         step = 1;
         hideAnimation = false;
     }
