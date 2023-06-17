@@ -161,7 +161,7 @@
             enableButtons = false;
             isTimerElapsed = true;
             StateHasChanged();
-            UserService.User.Choice = selectedButton;
+            UserService.User.Choice = selectedButton is null ? "null" : selectedButton;
             if (hubConnection is not null)
             {
                 await hubConnection.SendAsync("Answer", UserService.User);

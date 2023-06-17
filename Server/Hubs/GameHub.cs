@@ -55,6 +55,14 @@ namespace Rock_Paper_Scissors.Server.Hubs
             if (rooms[player.RoomCode].Count == 1)
             {
                 await Clients.Group(player.RoomCode).SendAsync("Error", "Opponent left the game");
+                return;
+            }
+
+            // Check if any player has answer "null"
+            if (rooms[player.RoomCode].Any(p => p.Choice == "null"))
+            {
+                await Clients.Group(player.RoomCode).SendAsync("Error", "Player(s) failed to choose");
+                return;
             }
 
             // Check if both players have answered
