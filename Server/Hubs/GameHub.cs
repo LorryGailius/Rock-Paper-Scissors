@@ -108,6 +108,7 @@ namespace Rock_Paper_Scissors.Server.Hubs
                 if(rooms.ContainsKey(player.RoomCode))
                 {
                     await Clients.Caller.SendAsync("Error", "Room already exists");
+                    return;
                 }
                 else
                 {
@@ -118,6 +119,7 @@ namespace Rock_Paper_Scissors.Server.Hubs
             {
                 // Player joining room that doesn't exist
                 await Clients.Caller.SendAsync("Error", "Room doesn't exist");
+                return;
             }
 
             // Check if username is taken
