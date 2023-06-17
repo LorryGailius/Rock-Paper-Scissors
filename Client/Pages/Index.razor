@@ -1,45 +1,62 @@
 ﻿@page "/"
 @using System.Text;
 @using Rock_Paper_Scissors.Client.Services;
+@using BlazorAnimate;
 @inject IUserService UserService;
 @inject NavigationManager NavigationManager;
 
 <div class="index">
     <h1>ROCK PAPER SCISSORS</h1>
-
     @switch (step)
     {
         case 1:
-            <div class="menu 1">
+
+            if (hideAnimation)
+            {
                 <div class="menu" id="1">
-                <button @onclick=@HostOnClick>Create Game</button>
-                <button @onclick=@JoinOnClick>Join Game</button>
-            </div>
+                    <button @onclick=@HostOnClick>Create Game</button>
+                    <button @onclick=@JoinOnClick>Join Game</button>
+                </div>
+            }
+            else
+            {
+                <Animate Animation="Animations.SlideRight" hidden=@hideAnimation>
+                    <div class="menu" id="1">
+                        <button @onclick=@HostOnClick>Create Game</button>
+                        <button @onclick=@JoinOnClick>Join Game</button>
+                    </div>
+                </Animate>
+                hideAnimation = true;
+            }
             break;
         case 2:
             <Animate Animation="Animations.SlideLeft">
                 <div class="menu" id="2">
-                <h5>Username:</h5>
-                <InputText @bind-Value=@UserService.User.Username class="input username" placeholder="Username" />
+                    <h5>Username:</h5>
+                    <InputText @bind-Value=@UserService.User.Username class="input" placeholder="Username" />
 
-                @if (host)
-                {
-                    <button @onclick=@CreateRoom>Create</button>
-                }
-                else
-                {
-                    <h5>Room Code:</h5>
-                    <InputText @bind-Value=@UserService.User.RoomCode class="input roomcode" placeholder="Room Code" />
-                    <button @onclick=@JoinRoom>Join</button>
-                }
-                <button @onclick=@BackOnClick style="position:absolute;bottom:0;">◄Go back</button>
-            </div>
+                    @if (host)
+                    {
+                        <button @onclick=@CreateRoom>Create</button>
+                    }
+                    else
+                    {
+                        <h5>Room Code:</h5>
+                        <InputText @bind-Value=@UserService.User.RoomCode class="input" placeholder="Room Code" />
+                        <button @onclick=@JoinRoom>Join</button>
+                    }
+
+                    <button @onclick=@BackOnClick style="position:absolute;bottom:0;">◄Go back</button>
+                </div>
+            </Animate>
             break;
     }
 </div>
 
 @code {
+
     bool host = false;
+    bool hideAnimation = true;
     int step = 1;
 
     private void HostOnClick()
@@ -58,6 +75,13 @@
     {
         host = false;
         step = 1;
+        hideAnimation = false;
+    }
+
+    public Animate animation1;
+    private void Animate()
+    {
+        animation1.Run();
     }
 
     private void CreateRoom()
