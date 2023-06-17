@@ -73,8 +73,8 @@
     align-items: center;
     justify-content: flex-start;
     margin: 1.25rem;
-    height: 25%;
-    width: 50%;
+    height: 25vh;
+    width: 50vw;
 }
 
 h1 {
@@ -140,7 +140,7 @@ button {
 /* Landscape Phone */
 @media only screen and (min-width: 600px) {
     .crd {
-        display: none;
+        display: block;
     }
 }
 

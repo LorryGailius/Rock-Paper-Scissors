@@ -1,12 +1,19 @@
 ﻿@page "/"
 @using System.Text;
 @using Rock_Paper_Scissors.Client.Services;
+@using System.Timers;
 @using BlazorAnimate;
 @inject IUserService UserService;
 @inject NavigationManager NavigationManager;
 
 <div class="index">
+    <div class="logo">
+        <img style="height:100%;" src="Images/Rock.svg" />
+        <img style="height:60%; margin-left:-10%;" src="Images/Paper.svg" />
+        <img style="height:80%; padding-bottom:2%;" src="Images/Scissors.svg" />
+    </div>
     <h1>ROCK PAPER SCISSORS</h1>
+
     @switch (step)
     {
         case 1:
