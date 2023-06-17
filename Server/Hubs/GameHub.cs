@@ -68,6 +68,12 @@ namespace Rock_Paper_Scissors.Server.Hubs
                 rooms[player.RoomCode][0].Choice = null;
                 rooms[player.RoomCode][1].Choice = null;
             }
+
+            // Check if one player in room
+            if (rooms[player.RoomCode].Count == 1)
+            {
+                await Clients.Group(player.RoomCode).SendAsync("Error", "Player left the game");
+            }
         }
 
         public Player GetWinner(Player p1, Player p2)
@@ -113,25 +119,6 @@ namespace Rock_Paper_Scissors.Server.Hubs
             {
                 await Clients.Caller.SendAsync("Error", "Room is full");
                 return;
-            }
-
-            // Print how many rooms are active
-            Console.WriteLine($"\nThere are {rooms.Count} rooms active");
-
-            Console.WriteLine("-------------------------------------------------------------------------------");
-
-            // Print all rooms and their players
-            foreach (var room in rooms)
-            {
-                Console.WriteLine($"Room {room.Key} has {room.Value.Count} players");
-
-                foreach (var p in room.Value)
-                {
-                    Console.WriteLine($"Player {p.Username} is in room {p.RoomCode}");
-                }
-
-
-                Console.WriteLine("-------------------------------------------------------------------------------");
             }
 
             // Add user to group
