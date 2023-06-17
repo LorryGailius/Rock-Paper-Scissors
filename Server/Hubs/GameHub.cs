@@ -55,6 +55,12 @@ namespace Rock_Paper_Scissors.Server.Hubs
         {
             rooms[player.RoomCode].FirstOrDefault(p => p.Username == player.Username).Choice = player.Choice;
 
+            // Check if one player in room
+            if (rooms[player.RoomCode].Count == 1)
+            {
+                await Clients.Group(player.RoomCode).SendAsync("Error", "Player left the game");
+            }
+
             // Check if both players have answered
             if (rooms[player.RoomCode].All(p => p.Choice != null))
             {
@@ -67,12 +73,6 @@ namespace Rock_Paper_Scissors.Server.Hubs
                 // Reset choices
                 rooms[player.RoomCode][0].Choice = null;
                 rooms[player.RoomCode][1].Choice = null;
-            }
-
-            // Check if one player in room
-            if (rooms[player.RoomCode].Count == 1)
-            {
-                await Clients.Group(player.RoomCode).SendAsync("Error", "Player left the game");
             }
         }
 
