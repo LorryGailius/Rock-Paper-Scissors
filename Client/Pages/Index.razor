@@ -19,7 +19,7 @@
 
             <div class="menu 2">
                 <h5>Username:</h5>
-                <InputText @bind-Value=@UserService.User.Username class="input username" placeholder="Username"/>
+                <InputText @bind-Value=@UserService.User.Username class="input username" placeholder="Username" />
 
                 @if (host)
                 {
@@ -28,7 +28,7 @@
                 else
                 {
                     <h5>Room Code:</h5>
-                    <InputText @bind-Value=@UserService.User.RoomCode class="input roomcode" placeholder="Room Code"/>
+                    <InputText @bind-Value=@UserService.User.RoomCode class="input roomcode" placeholder="Room Code" />
                     <button @onclick=@JoinRoom>Join</button>
                 }
                 <button @onclick=@BackOnClick style="position:absolute;bottom:0;">◄Go back</button>
@@ -40,8 +40,6 @@
 @code {
     bool host = false;
     int step = 1;
-
-    String salt = String.Empty;
 
     private void HostOnClick()
     {
@@ -73,6 +71,8 @@
 
     private void JoinRoom()
     {
+        UserService.User.Username = UserService.User.Username.Trim();
+        UserService.User.RoomCode = UserService.User.RoomCode.Trim();
         if (String.IsNullOrEmpty(UserService.User.Username) || String.IsNullOrEmpty(UserService.User.RoomCode))
         {
             return;
