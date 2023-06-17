@@ -79,3 +79,27 @@ main {
         padding-right: 1.5rem !important;
     }
 }
+
+/* Phone */
+@media only screen and (max-width: 600px) {
+    h4 {
+        font-size: 0.5rem;
+        font-weight: bold;
+    }
+}
+
+/* Landscape Phone */
+@media only screen and (min-width: 600px) {
+    h4 {
+        font-size: 0.5rem;
+        font-weight: bold;
+    }
+}
+
+/* Desktop */
+@media only screen and (min-width: 992px) {
+    h4 {
+        font-size: 1rem;
+        font-weight: bold;
+    }
+}
