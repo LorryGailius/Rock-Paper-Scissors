@@ -72,15 +72,17 @@ namespace Rock_Paper_Scissors.Server.Hubs
 
         public Player GetWinner(Player p1, Player p2)
         {
-            if (p1.Choice == null || p1.Choice == "Paper" && p2.Choice == "Scissors" || p1.Choice == "Rock" && p2.Choice == "Paper" || p1.Choice == "Scissors" && p2.Choice == "Rock")
+            // Check if player 2 wins
+            if (p1.Choice == "Paper" && p2.Choice == "Scissors" || p1.Choice == "Rock" && p2.Choice == "Paper" || p1.Choice == "Scissors" && p2.Choice == "Rock")
             {
                 return p2;
             }
 
+            // Check if it's a tie
             if(p1.Choice == p2.Choice)
             {
                 Player tie = new Player();
-                tie.Username = "Tie";
+                tie.Username = ".:Tie:.";
                 return tie;
             }
 
