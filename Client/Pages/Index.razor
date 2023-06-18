@@ -104,9 +104,9 @@
         {
             return;
         }
-        UserService.User.RoomCode = UserService.User.RoomCode.ToUpper();
         UserService.User.Username = UserService.User.Username.Trim();
         UserService.User.RoomCode = UserService.User.RoomCode.Trim();
+        UserService.User.RoomCode = UserService.User.RoomCode.ToUpper();
         NavigationManager.NavigateTo($"/play?roomCode={UserService.User.RoomCode}");
     }
 
