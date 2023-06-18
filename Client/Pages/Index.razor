@@ -94,8 +94,12 @@
         {
             return;
         }
-        UserService.User.RoomCode = GenerateId(6);
-        NavigationManager.NavigateTo($"/play?roomCode={UserService.User.RoomCode}");
+        UserService.User.Username = UserService.User.Username.Trim();
+        if (!String.IsNullOrEmpty(UserService.User.Username))
+        {
+            UserService.User.RoomCode = GenerateId(6);
+            NavigationManager.NavigateTo($"/play?roomCode={UserService.User.RoomCode}");
+        }
     }
 
     private void JoinRoom()
