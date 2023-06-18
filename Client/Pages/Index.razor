@@ -100,12 +100,12 @@
 
     private void JoinRoom()
     {
-        UserService.User.Username = UserService.User.Username.Trim();
-        UserService.User.RoomCode = UserService.User.RoomCode.Trim();
         if (String.IsNullOrEmpty(UserService.User.Username) || String.IsNullOrEmpty(UserService.User.RoomCode))
         {
             return;
         }
+        UserService.User.Username = UserService.User.Username.Trim();
+        UserService.User.RoomCode = UserService.User.RoomCode.Trim();
         UserService.User.RoomCode = UserService.User.RoomCode.ToUpper();
         NavigationManager.NavigateTo($"/play?roomCode={UserService.User.RoomCode}");
     }
