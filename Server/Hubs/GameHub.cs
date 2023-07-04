@@ -68,6 +68,12 @@ namespace Rock_Paper_Scissors.Server.Hubs
             // Check if both players have answered
             if (rooms[player.RoomCode].All(p => p.Choice != null))
             {
+                if (rooms[player.RoomCode][0].Choice == rooms[player.RoomCode][1].Choice)
+                {
+                    await Clients.Group(player.RoomCode).SendAsync("Error", "It's a TIE");
+                    return;
+                }
+
                 // Get winner
                 var winner = GetWinner(rooms[player.RoomCode][0], rooms[player.RoomCode][1]);
 
@@ -86,14 +92,6 @@ namespace Rock_Paper_Scissors.Server.Hubs
             if (p1.Choice == "Paper" && p2.Choice == "Scissors" || p1.Choice == "Rock" && p2.Choice == "Paper" || p1.Choice == "Scissors" && p2.Choice == "Rock")
             {
                 return p2;
-            }
-
-            // Check if it's a tie
-            if(p1.Choice == p2.Choice)
-            {
-                Player tie = new Player();
-                tie.Username = ".:Tie:.";
-                return tie;
             }
 
             return p1;

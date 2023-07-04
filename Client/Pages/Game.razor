@@ -48,14 +48,8 @@
                     }
                     else if (winner is not null)
                     {
-                        @if (winner.Username == ".:Tie:.")
-                        {
-                            <h1 class="centered">It's a TIE</h1>
-                        }
-                        else
-                        {
-                            <h1 class="centered">Winner is @winner.Username with <img src="Images/@(winner.Choice).svg" /></h1>
-                        }
+
+                        <h1 class="centered">Winner is @winner.Username with <img src="Images/@(winner.Choice).svg" /></h1>
                     }
                     else
                     {
